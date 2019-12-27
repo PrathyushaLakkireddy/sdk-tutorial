@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/PrathyushaLakkireddy/sdk-tutorial/x/organizationStore/internal/types"
-)
+	)
 
 type Keeper struct {
 	Storekey sdk.StoreKey
@@ -63,6 +63,7 @@ func (k Keeper) GetOrganization(ctx sdk.Context, name string) types.MsgOrgStore 
 	}
 
 	k.cdc.MustUnmarshalBinaryBare(bz, &orgStore)
+
 	return orgStore
 }
 

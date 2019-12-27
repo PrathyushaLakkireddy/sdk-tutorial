@@ -18,33 +18,35 @@ func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	nameserviceQueryCmd.AddCommand(client.GetCommands(
-
 		GetCmdOrganizations(storeKey, cdc),
+		GetCmdOrganizationUsers(storeKey,cdc),
 	)...)
 	return nameserviceQueryCmd
 }
 
+func GetCmdOrganizationUsers(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "org_users_list [orgName]",
+		Short: "Userslist of an organization",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			orgName := args[0]
 
-//func GetCmdOrganizations(organizationName string, cdc *codec.Codec) *cobra.Command {
-//	return &cobra.Command{
-//		Use:   "organizations",
-//		Short: "orgs",
-//		// Args:  cobra.ExactArgs(1),
-//		RunE: func(cmd *cobra.Command, args []string) error {
-//			cliCtx := context.NewCLIContext().WithCodec(cdc)
-//
-//			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("/organizations/%s", organizationName),nil)
-//			if err != nil {
-//				fmt.Printf("could not get query organizations\n")
-//				return nil
-//			}
-//
-//			var out types.MsgOrgStore
-//			cdc.MustUnmarshalJSON(res, &out)
-//			return cliCtx.PrintOutput(nil)
-//		},
-//	}
-//}
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/org_users_list/%s", queryRoute,orgName),nil)
+			if err != nil {
+				fmt.Printf("could not query organizations\n", err)
+				return nil
+			}
+
+			fmt.Printf(string(res))
+
+			//var out types.OrgUsers
+			//cdc.MustUnmarshalJSON(res, &out)
+			return cliCtx.PrintOutput(nil)
+		},
+	}
+}
 
 // GetCmdOrgs queries a list of all orgs
 func GetCmdOrganizations(queryRoute string, cdc *codec.Codec) *cobra.Command {
