@@ -4,7 +4,7 @@ import (
 	"os"
 	"path"
 
-	app "github.com/akhilkumarpilli/sdk-tutorial"
+	app "github.com/PrathyushaLakkireddy/sdk-tutorial"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"

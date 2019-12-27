@@ -39,13 +39,11 @@ func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router
 }
 
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
-	//return cli.GetQueryCmd(StoreKey, cdc)
-	return nil
+	return cli.GetQueryCmd(StoreKey, cdc)
 }
 
 func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetTxCmd(StoreKey, cdc)
-	//return cli.GetTxCmd(StoreKey, cdc)
 }
 
 

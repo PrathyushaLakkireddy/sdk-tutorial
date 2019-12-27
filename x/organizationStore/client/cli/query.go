@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"fmt"
-)
+	)
 
 func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	nameserviceQueryCmd := &cobra.Command{
@@ -25,23 +25,46 @@ func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 }
 
 
-func GetCmdOrganizations(organizationName string, cdc *codec.Codec) *cobra.Command {
+//func GetCmdOrganizations(organizationName string, cdc *codec.Codec) *cobra.Command {
+//	return &cobra.Command{
+//		Use:   "organizations",
+//		Short: "orgs",
+//		// Args:  cobra.ExactArgs(1),
+//		RunE: func(cmd *cobra.Command, args []string) error {
+//			cliCtx := context.NewCLIContext().WithCodec(cdc)
+//
+//			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("/organizations/%s", organizationName),nil)
+//			if err != nil {
+//				fmt.Printf("could not get query organizations\n")
+//				return nil
+//			}
+//
+//			var out types.MsgOrgStore
+//			cdc.MustUnmarshalJSON(res, &out)
+//			return cliCtx.PrintOutput(nil)
+//		},
+//	}
+//}
+
+// GetCmdOrgs queries a list of all orgs
+func GetCmdOrganizations(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "organizations",
-		Short: "orgs",
+		Use:   "orgs_list",
+		Short: "Organization List",
 		// Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("/organizations/%s", organizationName),nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/orgs_list", queryRoute), nil)
 			if err != nil {
-				fmt.Printf("could not get query organizations\n")
+				fmt.Printf("could not get query names\n")
 				return nil
 			}
 
-			var out types.MsgOrgStore
+			var out types.QueryResOrgs
 			cdc.MustUnmarshalJSON(res, &out)
-			return cliCtx.PrintOutput(nil)
+
+			return cliCtx.PrintOutput(out)
 		},
 	}
 }

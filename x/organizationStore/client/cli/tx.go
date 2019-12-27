@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/PrathyushaLakkireddy/sdk-tutorial/x/organizationStore/internal/types"
 	"github.com/spf13/cobra"
+	"github.com/kataras/golog"
 )
 
 func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
@@ -55,7 +56,7 @@ func CmdToDeleteOrganization(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "delete_organization [orgName] ",
 		Short: "Give organization name to delete",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
@@ -77,7 +78,7 @@ func CmdToStoreOrgUser(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "set_org_user [orgName] [userName] [userRole]",
 		Short: "Set the user details userName and role assosiated with orgName",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
@@ -99,13 +100,15 @@ func CmdToStoreOrg(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "set_org_store [name] ",
 		Short: "Set the organizaton name",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
+			golog.Error("address...", cliCtx.GetFromAddress())
+
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			msg := types.NewMsgOrganizationStore(args[0], cliCtx.GetFromAddress(), args[1], args[2], args[3])
+			msg := types.NewMsgOrganizationStore(args[0], cliCtx.GetFromAddress(), "", "", "")
 
 			err := msg.ValidateBasic()
 			if err != nil {

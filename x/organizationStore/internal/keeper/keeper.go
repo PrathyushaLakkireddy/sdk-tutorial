@@ -123,3 +123,7 @@ func (k Keeper) DeleteOrganizationUser(ctx sdk.Context, orgName string, uName st
 }
 
 
+func (k Keeper) GetOrgsIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.Storekey)
+	return sdk.KVStorePrefixIterator(store, nil)
+}
