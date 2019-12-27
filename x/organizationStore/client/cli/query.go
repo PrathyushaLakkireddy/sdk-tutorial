@@ -20,8 +20,34 @@ func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	nameserviceQueryCmd.AddCommand(client.GetCommands(
 		GetCmdOrganizations(storeKey, cdc),
 		GetCmdOrganizationUsers(storeKey,cdc),
+		GetCmdOrganizationDetails(storeKey,cdc),
 	)...)
 	return nameserviceQueryCmd
+}
+
+
+func GetCmdOrganizationDetails(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "org_details [orgName]",
+		Short: "Get details of an organization",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			orgName := args[0]
+
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/org_details/%s", queryRoute,orgName),nil)
+			if err != nil {
+				fmt.Printf("could not query organizations\n", err)
+				return nil
+			}
+
+			fmt.Printf(string(res))
+
+			//var out types.OrgUsers
+			//cdc.MustUnmarshalJSON(res, &out)
+			return cliCtx.PrintOutput(nil)
+		},
+	}
 }
 
 func GetCmdOrganizationUsers(queryRoute string, cdc *codec.Codec) *cobra.Command {

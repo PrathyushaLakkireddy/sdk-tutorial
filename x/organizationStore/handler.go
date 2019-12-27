@@ -25,12 +25,14 @@ func NewHandler(keeper Keeper) sdk.Handler {
 }
 
 func handleMsgDeleteOrgUser(ctx sdk.Context, keeper Keeper, msg MsgDeleteOrgUser) sdk.Result{
-	if !keeper.IsNamePresent(ctx, msg.Name) {
+	if !keeper.IsNamePresent(ctx, msg.OrgName) {
 		return sdk.ErrUnknownRequest("This organization doesn't exists").Result()
 	}
-	if !msg.Address.Equals(keeper.GetOwner(ctx, msg.Name)) {
-		return sdk.ErrUnauthorized("Incorrect Owner").Result()
-	}
+	//if !msg.Address.Equals(keeper.GetOwner(ctx, msg.OrgName)) {
+	//	return sdk.ErrUnauthorized("Incorrect Owner").Result()
+	//}
+
+	fmt.Println("organization nameeeeeeeeee.....", msg.OrgName)
 
 	keeper.DeleteOrganizationUser(ctx, msg.OrgName,msg.Name)
 	return sdk.Result{}
@@ -58,6 +60,9 @@ func handleMsgStoreOrg(ctx sdk.Context, keeper Keeper, msg MsgStoreOrganization)
 }
 
 func handleMsgStoreOrgUser(ctx sdk.Context, keeper Keeper, msg MsgStoreOrgUser) sdk.Result {
+
+	fmt.Println("cmng here.......")
+
 	if keeper.GetOrganization(ctx, msg.OrgName).Name == " " {
 		return sdk.ErrUnknownRequest("This organization doesn't exists").Result()
 	}

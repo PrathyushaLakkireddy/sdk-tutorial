@@ -4,7 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/PrathyushaLakkireddy/sdk-tutorial/x/organizationStore/internal/types"
-	)
+	"fmt"
+)
 
 type Keeper struct {
 	Storekey sdk.StoreKey
@@ -33,20 +34,16 @@ func (k Keeper) SetOrganization(ctx sdk.Context, Name string, owner sdk.AccAddre
 }
 
 func (k Keeper) SetOrganizationUser(ctx sdk.Context, orgName string, owner sdk.AccAddress, role string, uName string) {
-	var org types.MsgOrgStore
+	org := k.GetOrganization(ctx,orgName)
 
-	if owner.Empty() {
-		return
-	}
 	orgUser := types.OrgUsers{
 		Address: owner,
 		Role:    role,
 		Name:    uName,
 		OrgName: orgName,
 	}
-	var user []types.OrgUsers
 
-	org.OrgUsers = append(user, orgUser)
+	org.OrgUsers = append(org.OrgUsers, orgUser)
 
 	store := ctx.KVStore(k.Storekey)
 	store.Set([]byte(orgName), k.cdc.MustMarshalBinaryBare(org))
@@ -85,7 +82,7 @@ func (k Keeper) GetWhichOrg(ctx sdk.Context, name string) types.MsgDeleteOrganiz
 }
 
 func (k Keeper) GetOwner(ctx sdk.Context, name string) sdk.AccAddress {
-	return k.GetWhichOrg(ctx, name).Owner
+	return k.GetOrganization(ctx, name).Owner
 }
 
 func (k Keeper) DeleteOrganization(ctx sdk.Context, name string) {
@@ -111,6 +108,9 @@ func (k Keeper) DeleteOrgUser(ctx sdk.Context, orgName string, uName string) {
 
 func (k Keeper) DeleteOrganizationUser(ctx sdk.Context, orgName string, uName string) {
 	store := ctx.KVStore(k.Storekey)
+
+	fmt.Println("orgNamee............", orgName)
+
 	orgDetails := k.GetOrganization(ctx, orgName)
 
 	var details []types.OrgUsers
